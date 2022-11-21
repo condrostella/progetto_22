@@ -35,5 +35,4 @@ int DiskDriver_freeBlock(DiskDriver* disk, int block_num);
 int DiskDriver_getFreeBlock(DiskDriver* disk, int start);
 
 
-int DiskDriver_flush(DiskDriver* disk);
 

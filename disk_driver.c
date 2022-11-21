@@ -51,3 +51,52 @@ void DiskDriver_init(DiskDriver* disk, const char* filename, int num_blocks){
     }
    
 }
+
+int DiskDriver_writeBlock(DiskDriver* disk, void* src, int block_num){
+
+	// Se il numero del blocco da scrivere è maggiore del numero di blocchi esistenti, restituisco un errore
+	if(block_num > disk->header->num_blocks) return -1;
+
+    int fd=disk->fd;
+    int ret=lseek(fd,sizeof(DiskHeader)+disk->header->num_blocks*sizeof(int)+BLOCK_SIZE*block_num,SEEK_SET);
+    if(ret<0){
+		perror("errore nella seek");
+		return -1;
+    }
+    ret=write(fd,src,BLOCK_SIZE);
+    if(ret==-1){
+		perror("errore nella write");
+		return -1;
+    }
+
+    disk->header->free_blocks--;
+	disk->header->first_free_block = DiskDriver_getFreeBlock(disk,0);
+    return ret;
+
+}
+
+int DiskDriver_getFreeBlock(DiskDriver* disk, int start){
+
+	if(disk->header->free_blocks==0){
+		printf("free_blocks==0");
+		return -1;
+    }
+
+	//controllo che l'indice start sia valido
+    if(start<0) {
+		printf("Start index %d must be >=0",start);
+		return -1;
+    }else if ( start>disk->header->num_blocks){
+		printf("Start index %d must be <=%d ",start,disk->header->num_blocks);
+		return -1;
+	}
+
+	//cerco il primo blocco libero a partire da start
+    for(int i=start;i<disk->header->num_blocks;i++) {
+        if(disk->fat[i]==-1) {
+			return i;
+        }
+    }
+
+    return disk->header->first_free_block;
+}
