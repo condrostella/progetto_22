@@ -14,28 +14,27 @@ ListItem* List_find(ListHead* head, char* filename){
   // linear scanning of list
   ListItem* aux=head->first;
   while(aux){
-    if (!strcmp(((FileHandle*)aux)->ffb->fcb.name,filename)) //if (aux==item)
-      return aux; //return item;
+    if (!strcmp(((FileHandle*)aux)->ffb->fcb.name,filename)) 
+      return aux; 
     aux=aux->next;
   }
-  return 0; //return NULL;
+  return NULL; 
 }
 
 ListItem* List_insert(ListHead* head, ListItem* prev, ListItem* item) {
-  if (item->next || item->prev){
-    printf("qua problema\n"); //return NULL;
-    return 0;
+  if (item->next || item->prev){ 
+    return NULL;
   }
   
 #ifdef _LIST_DEBUG_
   // we check that the element is not in the list
-  ListItem* instance=List_find(head, ((FileHandle*)item)->ffb->fcb.name);//item
+  ListItem* instance=List_find(head, ((FileHandle*)item)->ffb->fcb.name);
   assert(!instance);
 
   // we check that the previous is in the list
 
   if (prev) {
-    ListItem* prev_instance=List_find(head, ((FileHandle*)prev)->ffb->fcb.name);//prev
+    ListItem* prev_instance=List_find(head, ((FileHandle*)prev)->ffb->fcb.name);
     assert(prev_instance);
   }
   // we check that the previous is in the list
@@ -66,7 +65,7 @@ ListItem* List_detach(ListHead* head, ListItem* item) {
 
 #ifdef _LIST_DEBUG_
   // we check that the element is in the list
-  ListItem* instance=List_find(head,((FileHandle*)item)->ffb->fcb.name);//item
+  ListItem* instance=List_find(head,((FileHandle*)item)->ffb->fcb.name);
   assert(instance);
 #endif
 
@@ -83,15 +82,32 @@ ListItem* List_detach(ListHead* head, ListItem* item) {
   if (item==head->last)
     head->last=prev;
   head->size--;
-  item->next=item->prev=0;//NULL
+  item->next=item->prev=NULL;
   return item;
 }
 
 void List_print(ListHead* head) {
   ListItem* aux=head->first;
   while(aux) {
-    printf("Nome file: %s\n",((FileHandle*)aux)->ffb->fcb.name); //printf("%d ", element->info);
+    printf("Nome file: %s\n",((FileHandle*)aux)->ffb->fcb.name); 
     aux=aux->next;
   }
+}
+
+void List_free(ListHead* head) {
+  if(head==NULL) return;
+  FileHandle* fh;
+  ListItem* aux=head->first;
+  ListItem* tmp;
+  while(aux!=NULL) {
+    tmp=aux;
+    fh=(FileHandle*)tmp;
+    free(fh->ffb);
+    free(tmp);
+    aux=aux->next;
+    
+  }
+  free(head);
+  return;
 }
 

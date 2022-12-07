@@ -28,6 +28,6 @@ ListItem* List_insert(ListHead* head, ListItem* previous, ListItem* item);
 // list
 ListItem* List_detach(ListHead* head, ListItem* item);
 
-
-
 void List_print(ListHead* head);
+
+void List_free(ListHead* head);

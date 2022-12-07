@@ -12,9 +12,9 @@ typedef struct {
 
 
 typedef struct {
-  DiskHeader* header; // mmapped
-  int* fat; //mmapped
-  int fd; // for us
+  DiskHeader* header; 
+  int* fat; 
+  int fd; 
 } DiskDriver;
 
 
